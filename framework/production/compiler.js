@@ -42,7 +42,7 @@ function getScriptTags(appName) {
         cdnFiles = resources.externals.js || [];
 
     // polyfill
-    scripts += '<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-polyfill/7.2.5/polyfill.min.js"></script>';
+    // scripts += '<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-polyfill/7.2.5/polyfill.min.js"></script>';
 
     if (!Is.empty(cdnFiles)) {
         scripts = cdnFiles.map(filePath => {

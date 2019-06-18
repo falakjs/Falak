@@ -50,4 +50,4 @@ Run `flk serve ` to start the serve or `flk serve -o` to start the serve and ope
 
 # Documentation
 
-For full documentation check our [wiki docs](https://github.com/hassanzohdy/falak/wiki).
+For full documentation check our [wiki docs](https://github.com/falakjs/falak/wiki).

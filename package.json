@@ -1,6 +1,6 @@
 {
   "name": "falak",
-  "version": "0.1.70",
+  "version": "0.1.75",
   "preferGlobal": true,
   "bin": {
     "flk": "./framework/bin/flk"
@@ -23,25 +23,24 @@
   "license": "MIT",
   "dependencies": {
     "flk-fs": "^1.0.1",
-    "single-line-log": "1.1.2",
-    "@babel/core": "^7.2.2",
-    "@babel/preset-env": "^7.3.1",
+    "single-line-log": "^1.1.2",
+    "@babel/core": "^7.4.5",
+    "@babel/preset-env": "^7.4.5",
     "babel-preset-minify": "^0.5.0",
-    "@babel/polyfill": "7.2.5",
     "chalk": "^2.4.2",
     "child-process-promise": "^2.2.1",
-    "chokidar": "^2.0.4",
-    "deepmerge": "^3.0.0",
-    "express": "^4.16.4",
-    "fs-extra": "^7.0.1",
+    "chokidar": "^3.0.1",
+    "deepmerge": "^3.2.1",
+    "express": "^4.17.1",
+    "fs-extra": "^8.0.1",
     "multi-glob": "^1.0.2",
-    "node-sass": "^4.11.0",
-    "opn": "^5.4.0",
-    "socket.io-client": "2.2.0",
-    "socket.io": "^2.1.1",
+    "node-sass": "^4.12.0",
+    "open": "^6.3.0",
+    "socket.io-client": "^2.2.0",
+    "socket.io": "^2.2.0",
     "flk-parser": "^0.1.1",
-    "flk-support": "^0.1.1",
-    "axios": "^0.18.0",
-    "cli-table": "0.3.1"
+    "flk-support": "^0.1.13",
+    "axios": "^0.19.0",
+    "cli-table": "^0.3.1"
   }
 }

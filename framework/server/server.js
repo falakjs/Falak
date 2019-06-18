@@ -142,7 +142,7 @@ async function startServer(command) {
                 openOptions.app = config.browser;
             }
 
-            const open = require('opn');
+            const open = require('open');
             open(scriptUrl, openOptions);
         }
     });
