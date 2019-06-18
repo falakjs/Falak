@@ -16,14 +16,17 @@ But why falak? let's see what makes it different from other frameworks.
 - The development server is a lightweight one.
 - Production doesn't take much time and can compile one or all applications in same time.
 - Generating `.htaccess` files for Apache servers thus you won't have to look for one by yourself.  
-- Too many packages that help you in your development.
+- Packages everywhere to help you produce web apps quicker.
 - No complicated relations between components.
 
 # Table Of Contents
-- [Requirements](#requirements)
-- [Installation](#installation)
-- [Getting started](#getting-started)
-- [Documentation](#documentation)
+- [Falak JS](#Falak-JS)
+- [Why Falak](#Why-Falak)
+- [Table Of Contents](#Table-Of-Contents)
+- [Requirements](#Requirements)
+- [Installation](#Installation)
+- [Getting started](#Getting-started)
+- [Documentation](#Documentation)
 
 # Requirements
 - You need to have nodejs `>= 8` installed in your machine.
