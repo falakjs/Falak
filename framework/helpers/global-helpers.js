@@ -1,0 +1,23 @@
+global.window = global;
+
+require(NODE_MODULES_DIR + '/flk-method-definer/dist/method-definer');
+require(NODE_MODULES_DIR + '/flk-support-javascript/dist/Regex/escape');
+require(NODE_MODULES_DIR + '/flk-support-javascript/dist/Object/get');
+require(NODE_MODULES_DIR + '/flk-support-javascript/dist/Object/sort');
+require(NODE_MODULES_DIR + '/flk-support-javascript/dist/Object/match');
+require(NODE_MODULES_DIR + '/flk-support-javascript/dist/Array/end');
+require(NODE_MODULES_DIR + '/flk-support-javascript/dist/Array/remove');
+require(NODE_MODULES_DIR + '/flk-support-javascript/dist/String/ltrim');
+require(NODE_MODULES_DIR + '/flk-support-javascript/dist/String/rtrim');
+require(NODE_MODULES_DIR + '/flk-support-javascript/dist/String/trim');
+require(NODE_MODULES_DIR + '/flk-support-javascript/dist/String/capitalize');
+require(NODE_MODULES_DIR + '/flk-support-javascript/dist/String/replaceAll');
+require(NODE_MODULES_DIR + '/flk-support-javascript/dist/String/ucfirst');
+require(NODE_MODULES_DIR + '/flk-support-javascript/dist/String/toCamelCase');
+require(NODE_MODULES_DIR + '/flk-support-javascript/dist/String/toStudlyCase');
+require(NODE_MODULES_DIR + '/flk-support-javascript/dist/String/removeFirst');
+require(NODE_MODULES_DIR + '/flk-support-javascript/dist/String/removeLast');
+require(NODE_MODULES_DIR + '/flk-support-javascript/dist/String/toInputName');
+require(NODE_MODULES_DIR + '/flk-support-javascript/dist/String/repeatsOf');
+require(NODE_MODULES_DIR + '/flk-support-javascript/dist/String/replaceFirst');
+require(NODE_MODULES_DIR + '/flk-support-javascript/dist/String/replaceLast');

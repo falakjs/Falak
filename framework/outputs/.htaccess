@@ -1,0 +1,70 @@
+<IfModule mod_rewrite.c>
+    <IfModule mod_negotiation.c>
+        Options -MultiViews
+    </IfModule>
+
+    RewriteEngine On
+    # Prevent Indexing
+    Options +FollowSymLinks -Indexes
+
+    #Prerender
+
+    #https
+    
+    # Handle Front Controller...
+    #apps-rules    
+    # Prevent requesting all files except the following extensions
+    RewriteRule !(?i)APPS_LIST((public)/.*\.(bmp|js|ico|gif|jpg|jpeg|png|pdf|webp|css|txt|swf|flv|xml|zip|otf|eot|svg|ttf|woff|woff2|mp3|mp4|doc|docx|map|scss|less|rar|gzip))$ main.html [L]
+
+    # Prevent clickjacking
+    Header append X-FRAME-OPTIONS "SAMEORIGIN"
+    Header set  X-XSS-Protection  "1; mode=block"
+</IfModule>
+
+# Enable GZIP
+<ifModule mod_gzip.c>
+mod_gzip_on Yes
+mod_gzip_dechunk Yes
+mod_gzip_item_include file .(html?|txt|css|js|pl)$
+mod_gzip_item_include handler ^cgi-script$
+mod_gzip_item_include mime ^text/.*
+mod_gzip_item_include mime ^application/x-javascript.*
+mod_gzip_item_exclude mime ^image/.*
+mod_gzip_item_exclude rspheader ^Content-Encoding:.*gzip.*
+</ifModule>
+
+<ifmodule mod_deflate.c>
+AddOutputFilterByType DEFLATE text/text text/html text/plain text/xml text/css application/x-javascript application/javascript
+BrowserMatch ^Mozilla/4 gzip-only-text/html
+BrowserMatch ^Mozilla/4\.0[678] no-gzip
+BrowserMatch \bMSIE !no-gzip !gzip-only-text/html
+</ifmodule>
+
+# Expires Headers - 2678400s = 31 days
+<ifmodule mod_expires.c>
+  ExpiresActive On
+  ExpiresDefault "access plus 1 seconds"
+  ExpiresByType text/html "access plus 7200 seconds"
+  ExpiresByType image/gif "access plus 2678400 seconds"
+  ExpiresByType image/jpeg "access plus 2678400 seconds"
+  ExpiresByType image/png "access plus 2678400 seconds"
+  ExpiresByType text/css "access plus 518400 seconds"
+  ExpiresByType text/javascript "access plus 2678400 seconds"
+  ExpiresByType application/x-javascript "access plus 2678400 seconds"
+</ifmodule>
+
+# Cache Headers
+<ifmodule mod_headers.c>
+  # Cache specified files for 31 days
+  <filesmatch "\.(ico|flv|jpg|jpeg|png|gif|css|swf)$">
+  Header set Cache-Control "max-age=2678400, public"
+  </filesmatch>
+  # Cache HTML files for a couple hours
+  <filesmatch "\.(html|htm)$">
+  Header set Cache-Control "max-age=7200, private, must-revalidate"
+  </filesmatch>
+  # Cache PDFs for 31 days
+  <filesmatch "\.(pdf)$">
+  Header set Cache-Control "max-age=2678400, public"
+  </filesmatch>
+</IfModule>

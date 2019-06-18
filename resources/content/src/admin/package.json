@@ -1,0 +1,11 @@
+{
+    "name": "admin",
+    "favicon": "",
+    "assets": [],
+    "packages": [],
+    "modules": [
+        "shared",
+        "home",
+        "users"
+    ]
+}

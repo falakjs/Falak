@@ -1,0 +1,27 @@
+{
+    "validateOn": "input",
+    "formGroup": {
+        "tag": "div",
+        "className": "form-group",
+        "errorClass": "group-error",
+        "label": {
+            "position": "before",
+            "className": null,
+            "requiredElement": {
+                "tag": "span",
+                "text": "*",
+                "title": "required",
+                "className": "required"
+            }
+        }
+    },
+    "errorElement": {
+        "tag": "div",
+        "className": "error-msg",
+        "position": "after"
+    },
+    "select": {
+        "defaultOption": "please-select",
+        "using": null
+    }
+}

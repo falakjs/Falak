@@ -1,0 +1,65 @@
+{
+    "env": "development",
+    "production": {
+        "baseUrl": "https://sitename.com",
+        "https": true,
+        "prerender": true
+    },
+    "port": 81,
+    "browser": "default",
+    "baseApp": "blog",
+    "apps": {
+        "admin": {
+            "path": "/admin",
+            "locale": "en",
+            "meta": {
+                "title": {
+                    "en": "admin",
+                    "ar": "لوحة التحكم"
+                }
+            },
+            "locales": [
+                "en",
+                "ar"
+            ]
+        },
+        "blog": {
+            "path": "/",
+            "locale": "en",
+            "meta": {
+                "image": true,
+                "title": {
+                    "en": "Blog",
+                    "ar": "مدونتي"
+                },
+                "description": {
+                    "en": "Default description",
+                    "ar": "وصف الصفحة"
+                },
+                "keywords": {
+                    "en": "some,keywords,here",
+                    "ar": "بعض,الكلمات,هنا"
+                },
+                "twitter": true,
+                "twitterCard": "summary",
+                "graph": true,
+                "url": true,
+                "siteName": true
+            },
+            "locales": [
+                "en",
+                "ar"
+            ]
+        }
+    },
+    "locales": {
+        "en": {
+            "direction": "ltr",
+            "name": "English"
+        },
+        "ar": {
+            "direction": "rtl",
+            "name": "العربية"
+        }
+    }
+}

@@ -1,0 +1,6 @@
+class Header {
+    /**
+    * {@inheritDoc}
+    */
+    constructor() {}
+}

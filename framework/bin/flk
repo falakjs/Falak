@@ -1,0 +1,121 @@
+#! /usr/bin/env node
+try {
+    require('./env');
+    require('./../bootstrap/globals');
+    require('./../helpers/manager');
+    const fs = require('flk-fs');
+
+    const commander = require('./../commander/commander');
+
+    let packageJsonFile = fs.getJson(FRAMEWORK_PACKAGE_PATH + '/package.json');
+
+    commander
+        .version(packageJsonFile.version)
+        .command('nc, new:component <components...>', 'Create new component.')
+        .option('--app', 'Define the application name of the component, default to baseApp value in config settings.')
+        .option('-m, --module', 'Creates the component inside the given module name.')
+        .option('-r, --route', 'Create route for component.')
+        .option('-t, --title', 'Set page title, works only with --route option, default is component name.')
+        .option('-d, --as-child', 'Make the component as a child component.')
+        .option('--selector', 'Set component selector, default is the component name.')
+        .option('--unique', 'Determine if the component handler class will be instanciated only once.')
+        .option('-c, --component', 'Set component class handler name, default is the component name.')
+        .example('new header footer sidebar.')
+        .then(command => {
+            require(FRAMEWORK_ROOT_PATH + '/commands/new-component')(command);
+        });
+
+    commander
+        .command('ns, new:service <services...>', 'Create new service.')
+        .option('--app', 'Define the application name that will contain the installed service, default to baseApp value in config.json settings.')
+        .option('-m, --module', 'Creates the component inside the given module name.')
+        .option('-r, --route', 'Endpoint service route.')
+        .option('-a, --alias', 'Service alias name, default to service name in camel case.')
+        .then((command) => {
+            require(FRAMEWORK_ROOT_PATH + '/commands/new-service')(command);
+        });
+
+    commander
+        .command('nm, new:module <modules...>', 'Create new module.')
+        .option('--app', 'Define the application name that will contain the installed module, default to baseApp value in config.json settings.')
+        .option('-m, --module', 'Creates the component inside the given module name.')
+        .option('-r, --route', 'Create route for component and service.')
+        .then((command) => {
+            require(FRAMEWORK_ROOT_PATH + '/commands/new-module')(command);
+        });
+
+    commander
+        .command('nd, new:middleware <middlewares...>', 'Create new middelware.')
+        .option('--app', 'Define the application name that will contain the installed middleware, default to baseApp value in config.json settings.')
+        .then((command) => {
+            require(FRAMEWORK_ROOT_PATH + '/commands/new-middleware')(command);
+        });
+
+    commander
+        .command('pl, packages-list', 'Display available packages on npm for the framework..')
+        .then((command) => {
+            require(FRAMEWORK_ROOT_PATH + '/commands/packages-list')(command);
+        });
+
+    commander
+        .command('i, install <packages...>', 'Install npm packages and add it to the app package.json file.')
+        .example(`install ${process.env.CLI_NAME}-animator`)
+        .option('--app', 'Define the application name that will contain the installed packages, default to baseApp value in config.json settings.')
+        .then((command) => {
+            require(FRAMEWORK_ROOT_PATH + '/commands/install')(command);
+        });
+
+    commander
+        .command('new <appName>', 'Create new workspace.')
+        .option('--without-admin', 'To install only the website application without the admin application.')
+        .example('new store')
+        .then((command) => {
+            require(FRAMEWORK_ROOT_PATH + '/commands/new-workspace')(command);
+        });
+
+    // commander
+    //     .command('fresh-install [appName=blog]', 'Prepare the framework for first time after installation.')
+    //     .then(command => {
+    //         require(FRAMEWORK_ROOT_PATH + '/commands/fresh-install')(command);
+    //     });
+
+    commander
+        .command('serve [app]', 'Start serving application.')
+        .option('-p, --port', 'Set the opening port, default is in the config.json file.')
+        .option('-sp, --socket-port', 'Set the hot reloading port, default is ' + process.env.SOCKET_PORT)
+        .option('-o, --open', 'Open the application in browser.')
+        .option('-b, --browser', 'Open the application in the given browser name.')
+        .examples(
+            `${cli.cyanBright(`${process.env.CLI_NAME} serve`)} >> ${cli.yellow('Serve default application')}`,
+            `${cli.cyanBright(`${process.env.CLI_NAME} serve admin`)} >> ${cli.yellow('Serve admin application')}`,
+            `${cli.cyanBright(`${process.env.CLI_NAME} serve -o`)} >> ${cli.yellow('Serve default application and open it in the browser.')}`,
+            `${cli.cyanBright(`${process.env.CLI_NAME} serve -o -b=chrome`)} >> ${cli.yellow('Serve default application and open it in google chrome browser.')}`,
+        )
+        .then(command => {
+            require(FRAMEWORK_ROOT_PATH + '/server/index')(command);
+        });
+
+    commander
+        .command('produce [apps...]', 'Build applications for production..')
+        .option('--base-url', 'Define base url, default from config.json file.')
+        .option('--https', 'Allow only https requests by modifying htaccess file to force load https instead of http requests, default in config.json file')
+        .option('--separated', 'When this flag is set, each application will be produced in a separate directory, otherwise all will be compiled to one directory.')
+        .option('--without-htaccess', 'Do not create .htaccess file, use it when using nginx instead of apache.')
+        .then((command) => {
+            require(FRAMEWORK_ROOT_PATH + '/commands/produce')(command);
+        });
+
+    commander.onParsing(command => {
+        if (command.name == 'produce') {
+            global.ENV = 'production';
+        }
+
+        if (!['--version', 'new', 'produce'].includes(command.name)) {
+            require(FRAMEWORK_ROOT_PATH + '/bootstrap/app-config')(command.app, command);
+            require(FRAMEWORK_ROOT_PATH + '/bootstrap');
+        }
+    }).parse(process.argv);
+
+} catch (e) {
+    console.log(e);
+} 
