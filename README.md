@@ -1,5 +1,5 @@
 # Falak JS
-> Falak Js Framework, A framework for lazy people.
+> Falak Js Framework, A mass quick production framework for lazy people.
 
 
 # Why Falak
