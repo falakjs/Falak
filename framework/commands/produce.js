@@ -14,7 +14,7 @@ const httpsOnly = `    # Force https
 `;
 
 const prerenderText = (prerenderHandlerUrl, domainUrl, delay, bots) => `     # Prerender
-    RewriteCond %{HTTP_USER_AGENT} .*(${bots}).*
+    RewriteCond %{HTTP_USER_AGENT} .*(${bots}).* [NC]
     RewriteRule (.*) ${prerenderHandlerUrl}?domain=${domainUrl}&path=/$1&delay=${delay} [L,QSA]
 `;
 // with 301 Redirect
@@ -25,7 +25,7 @@ const DEFAULT_PRERENDER_OPTIONS = {
     internalPath: 'prerender.php',
     delay: 2500,
     externalUrl: 'https://prerender.hasanzohdy.com',
-    bots: 'Googlebot|facebook|crawl',
+    bots: 'Googlebot|facebook|crawl|WhatsApp',
     staticDir: 'static-files',
 };
 

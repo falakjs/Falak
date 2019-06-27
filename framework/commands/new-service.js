@@ -5,7 +5,7 @@ function createService(serviceName, command) {
 
     let serviceSegments = serviceName.split('/');
 
-    let service = serviceSegments.end().toStudlyCase() + 'Service';
+    let service = Array.end(serviceSegments).toStudlyCase() + 'Service';
 
     let moduleName = command.options.module;
 

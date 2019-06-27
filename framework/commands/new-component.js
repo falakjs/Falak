@@ -9,7 +9,7 @@ function createComponent(componentName, command) {
 
     let componentSegments = componentName.split('/');
 
-    let defaultSelector = componentSegments.end();
+    let defaultSelector = Array.end(componentSegments);
 
     let selector = command.options.selector || defaultSelector;
 

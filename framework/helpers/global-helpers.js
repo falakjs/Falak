@@ -1,6 +1,5 @@
 global.window = global;
 
-require(NODE_MODULES_DIR + '/flk-method-definer/dist/method-definer');
 require(NODE_MODULES_DIR + '/flk-support-javascript/dist/Regex/escape');
 require(NODE_MODULES_DIR + '/flk-support-javascript/dist/Object/get');
 require(NODE_MODULES_DIR + '/flk-support-javascript/dist/Object/sort');

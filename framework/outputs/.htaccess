@@ -14,7 +14,7 @@
     # Handle Front Controller...
     #apps-rules    
     # Prevent requesting all files except the following extensions
-    RewriteRule !(?i)APPS_LIST((public)/.*\.(bmp|js|ico|gif|jpg|jpeg|png|pdf|webp|css|txt|swf|flv|xml|zip|otf|eot|svg|ttf|woff|woff2|mp3|mp4|doc|docx|map|scss|less|rar|gzip))$ main.html [L]
+    RewriteRule !(?i)APPS_LIST((public)/.*\.(bmp|js|ico|gif|jpg|jpeg|png|pdf|webp|css|txt|swf|flv|xml|zip|otf|eot|svg|ttf|woff|woff2|mp3|mp4|wav|doc|docx|map|scss|less|rar|gzip))$ main.html [L]
 
     # Prevent clickjacking
     Header append X-FRAME-OPTIONS "SAMEORIGIN"
