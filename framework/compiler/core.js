@@ -34,16 +34,20 @@ class HtmlCore {
                 if (packageName.startsWith('package')) {
                     packagePath += '/dist';
                 }
-                
+
                 packagesList.push(packagePath);
             }
 
             this.attributes = new AttributesCollector(this.attributesPaths(packagesList));
             this.components = new ComponentsCollector(this.componentsPaths(packagesList));
 
-            await this.components.collect();
-            await this.attributes.collect();
-            resolve();
+            try {
+                await this.components.collect();
+                await this.attributes.collect();
+                resolve();
+            } catch (e) {
+                die(e);
+            }
         });
     }
 
@@ -95,7 +99,7 @@ class HtmlCore {
                 // it means the component is acting as a tag
                 if (!htmlFile || isChild) {
                     compiledFiles[key] = true;
-                    
+
                     if (key == lastFile) {
                         resolve();
                     }
@@ -133,11 +137,11 @@ class HtmlCore {
      */
     compileView(htmlFile, selector, component, isUnique, debug) {
         return new Promise(resolve => {
-            
+
             if (this.filesQueue[htmlFile]) {
                 return;
             }
-            
+
             this.filesQueue[htmlFile] = true;
 
             let html = fs.get(htmlFile, 'utf-8');

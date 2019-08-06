@@ -1,6 +1,7 @@
 const { fs } = require('./../bootstrap/modules');
 let htmlBuilder = require('../helpers/html-builder');
 const hashCode = random(24);
+const serviceWorker = require('./../build/builders/service-worker-handler');
 
 function copyAssets(STATIC_DIR) {
     for (let assets of resources.assets) {
@@ -28,13 +29,14 @@ function getHtmlCode(localeCode, direction, appName) {
     let title = appConfig.meta.title[localeCode];
 
     return htmlBuilder.appName(appName)
-                      .appDirection(direction)
-                      .localeCode(localeCode)
-                      .baseUrl(BASE_URL)
-                      .title(title)
-                      .stylesheets(getStylesheets(direction, appName))
-                      .scripts(getScriptTags(appName))
-                      .compile();
+        .appDirection(direction)
+        .localeCode(localeCode)
+        .facebookAppId(appConfig.meta.facebookAppId)
+        .baseUrl(BASE_URL)
+        .title(title)
+        .stylesheets(getStylesheets(direction, appName))
+        .scripts(getScriptTags(appName))
+        .compile();
 }
 
 function getScriptTags(appName) {
@@ -45,10 +47,11 @@ function getScriptTags(appName) {
     // scripts += '<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-polyfill/7.2.5/polyfill.min.js"></script>';
 
     if (!Is.empty(cdnFiles)) {
-        scripts = cdnFiles.map(filePath => {
+        scripts += cdnFiles.map(filePath => {
             return `<script src="${filePath}"></script>`;
         }).join('');
     }
+
 
     scripts += ['vendor', 'app'].map(fileType => {
         return `<script src="public/${appName}/js/${fileType}-${hashCode}.min.js"></script>`
@@ -93,6 +96,12 @@ module.exports = (appName, command) => {
         fs.makeDirectory(appDistPath);
         // create js directory
         fs.makeDirectory(appDistPath + '/js');
+
+        // check if there's a service worker
+        if (serviceWorker.check(appName)) {
+            serviceWorker.copy();
+        }
+        
         // create css directory
         fs.makeDirectory(appDistPath + '/css');
         // copy css files

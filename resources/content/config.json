@@ -3,7 +3,11 @@
     "production": {
         "baseUrl": "https://sitename.com",
         "https": true,
-        "prerender": true
+        "prerender": true,
+        "sitemap": {
+            "route": null,
+            "location": null
+        }
     },
     "port": 81,
     "browser": "default",
@@ -43,6 +47,7 @@
                 "twitter": true,
                 "twitterCard": "summary",
                 "graph": true,
+                "facebookAppId": null,
                 "url": true,
                 "siteName": true
             },

@@ -7,7 +7,7 @@ function createMiddleware(middlewareName, command) {
 
     let middlewarePath = ROOT + (moduleName ? `/src/${appName}/modules/${moduleName}/middleware/${middlewareName}.js` : `/src/${appName}/modules/middleware/${middlewareName}.js`);
 
-    updatePackage(moduleName);
+    updatePackage(moduleName, appName);
 
     if (fs.exists(middlewarePath)) {
         die(`${cli.redBright(middlewareName)} middleware already exists!`);
@@ -30,7 +30,7 @@ function createMiddleware(middlewareName, command) {
     echo(`${cli.cyan(middlewareName)} ${cli.green('middleware has been created successfully.')}`);
 }
 
-function updatePackage(moduleName) {
+function updatePackage(moduleName, appName) {
     let packagePath = ROOT + `/src/${appName}/package.json`;
 
     let $package = fs.getJson(packagePath);

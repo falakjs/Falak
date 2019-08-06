@@ -3,7 +3,15 @@ const { fs } = require('./../bootstrap/modules');
 class HTMLBuilder {
     constructor() {
         this.cssPreloader = fs.get(FRAMEWORK_ROOT_PATH + '/outputs/js/css-preload.js');
-        this.originalHtml = this.finalHtml = fs.get(FRAMEWORK_ROOT_PATH + '/outputs/html/index.dev.html');
+        let indexContent;
+
+        if (fs.exists(APP_DIR + '/index.html')) {
+            indexContent = fs.get(APP_DIR + '/index.html');
+        } else {
+            indexContent = fs.get(FRAMEWORK_ROOT_PATH + '/outputs/html/index.html');
+        }
+
+        this.originalHtml = this.finalHtml = indexContent;
 
         this.dataList = {
             appName: null,
@@ -17,6 +25,7 @@ class HTMLBuilder {
                 title: null,
                 twitter: true,
                 graph: true,
+                facebookAppId: null,
                 description: null,
                 url: true,
                 siteName: true
@@ -75,6 +84,19 @@ class HTMLBuilder {
      */
     appName(appName) {
         this.dataList.appName = appName;
+
+        return this;
+    }
+
+
+    /**
+     * Facebook app id
+     * 
+     * @param   integer  
+     * @returns this
+     */
+    facebookAppId(appId) {
+        this.dataList.facebookAppId = appId;
 
         return this;
     }
@@ -177,13 +199,13 @@ class HTMLBuilder {
 
         // remove the script itself
         stylesheets += `var m = document.getElementById('lcss');m.parentNode.removeChild(m);</script>`;
-        
+
         this.replace('EXTERNAL_STYLESHEETS', stylesheets);
         // let stylesheets = '';
         // for (let stylesheet of this.dataList.stylesheets.externals) {
         //     stylesheets += this.link('preload', stylesheet);
         // }
-        
+
         // this.replace('EXTERNAL_STYLESHEETS', stylesheets + `<script>${this.cssPreloader}</script>`);
 
         // now update the meta
@@ -229,6 +251,15 @@ class HTMLBuilder {
                 property: 'og:site_name',
                 value: this.dataList.appName,
             });
+        }
+
+        // facebook app id
+        if (appMetaOptions.facebookAppId) {
+            this.metaTags.push({
+                tag: 'meta',
+                property: 'fb:app_id',
+                value: this.dataList.facebookAppId,
+            })
         }
 
         // url

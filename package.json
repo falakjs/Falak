@@ -1,6 +1,6 @@
 {
   "name": "falak",
-  "version": "0.1.77",
+  "version": "0.1.86",
   "preferGlobal": true,
   "bin": {
     "flk": "./framework/bin/flk"
@@ -22,6 +22,7 @@
   ],
   "license": "MIT",
   "dependencies": {
+    "flk-commander": "^1.0.0",
     "flk-fs": "^1.0.1",
     "single-line-log": "^1.1.2",
     "@babel/core": "^7.4.5",

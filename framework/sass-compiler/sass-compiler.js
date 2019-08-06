@@ -1,7 +1,6 @@
 var sass = require('node-sass');
 const glob = require("multi-glob").glob;
 const { fs } = require('./../bootstrap/modules');
-require('./globals');
 
 // resources => from app builder module
 

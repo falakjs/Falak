@@ -52,6 +52,7 @@ class AppBuilder {
                 packages: {},
                 vendor: {},
                 externals: {},
+                internals: {}, // internal static files
                 assets: [],
                 cssVendor: [],
                 jsVendor: [],

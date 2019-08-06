@@ -1,13 +1,16 @@
 #! /usr/bin/env node
+require('./env');
+require('./../bootstrap/globals');
+require('./../helpers/manager');
 try {
-    require('./env');
-    require('./../bootstrap/globals');
-    require('./../helpers/manager');
-    const fs = require('flk-fs');
+    const { fs } = require('flk-fs');
 
-    const commander = require('./../commander/commander');
+    const { glob } = require('./../bootstrap/modules');
+
+    const commander = require('flk-commander');
 
     let packageJsonFile = fs.getJson(FRAMEWORK_PACKAGE_PATH + '/package.json');
+
 
     commander
         .version(packageJsonFile.version)
@@ -46,6 +49,7 @@ try {
 
     commander
         .command('nd, new:middleware <middlewares...>', 'Create new middelware.')
+        .option('-m, --module', 'Creates the component inside the given middleware name.')
         .option('--app', 'Define the application name that will contain the installed middleware, default to baseApp value in config.json settings.')
         .then((command) => {
             require(FRAMEWORK_ROOT_PATH + '/commands/new-middleware')(command);
@@ -114,8 +118,21 @@ try {
             require(FRAMEWORK_ROOT_PATH + '/bootstrap/app-config')(command.app, command);
             require(FRAMEWORK_ROOT_PATH + '/bootstrap');
         }
-    }).parse(process.argv);
+    });
+
+    (async function () {
+        // collect other commands
+        const files = await glob([
+            // ROOT + '/node_modules/**/compiler/commands/*.commands.js',
+            SRC_DIR + '/**/compiler/commands/*.command.js',
+        ]);
+
+        for (let file of files) {
+            require(file);
+        }
+
+        commander.parse(process.argv);
+    })();
 
 } catch (e) {
-    console.log(e);
 } 

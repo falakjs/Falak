@@ -1,5 +1,5 @@
 const cli = require('chalk');
-const { fs } = require('./../bootstrap/modules');
+const { fs } = require('flk-fs');
 var execute = require('child-process-promise').exec;
 
 class WorkSpace {
@@ -15,7 +15,7 @@ class WorkSpace {
 
         global.ROOT = this.workspaceDirectory;
 
-        global.SRC_DIR = ROOT + '/src'; 
+        global.SRC_DIR = ROOT + '/src';
 
         if (fs.exists(this.workspaceDirectory)) {
             die(cli.redBright(`Workspace "${cli.cyan(this.workspaceDirectory)}" is not empty, please use another directory or application name.`));

@@ -1,5 +1,6 @@
 const { fs } = require('./../../bootstrap/modules');
 const collectAssets = require('./collect-assets');
+const collectInternals = require('./collect-internals');
 const collectExternals = require('./collect-externals');
 const { installPackages } = require('./npm-manager');
 
@@ -69,6 +70,7 @@ function loadPackage(packageName, packageType) {
             resources.packages[`${$package.type}@${packageName}`] = $package.path;
         }
 
+        collectInternals($package);
         collectExternals($package);
 
         if (!Is.empty($package.assets)) {

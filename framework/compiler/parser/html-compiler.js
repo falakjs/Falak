@@ -24,12 +24,12 @@ module.exports = class HtmlCompiler {
         this.objectName = 'comp' + random(3);
         this.objectName = 'component';
 
-        const exceptionalElements = ['table', 'thead', 'th', 'tr', 'tbody', 'td', 'tfoot'];
+        const exceptionalElements = ['table', 'thead', 'th', 'tr', 'tbody', 'td', 'tfoot', 'caption', 'colgroup', 'col'];
 
         for (let el of exceptionalElements) {
             let regex = new RegExp(`(<)${el}(\\s|>)`, 'g');
             html = html.replace(regex, `$1${HTML_SPECIAL_ELEMENTS_PREFIX}${el}$2`).replaceAll(`(<)/${el}(>)`, `$1/${HTML_SPECIAL_ELEMENTS_PREFIX}${el}$2`);
-        }
+        }   
 
         this.viewName = viewName;
 
@@ -151,6 +151,13 @@ module.exports = class HtmlCompiler {
      * Set new if state
      */
     clearState(currentState) {
+        if (! currentState) {
+            // echo()
+            // console.trace();
+            // echo(this.ifStates);
+
+            return;
+        }
         this.currentState = null;
         for (let i = 0; i < this.ifStates.length; i++) {
             let state = this.ifStates[i];

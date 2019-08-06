@@ -1,5 +1,5 @@
 const glob = require("multi-glob").glob;
-const fs = require('flk-fs');
+const { fs } = require('flk-fs');
 
 const promisableGlob = (patterns, callback = () => {}) => {
     return new Promise((resolve, reject) => {

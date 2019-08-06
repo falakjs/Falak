@@ -1,10 +1,27 @@
-class HTMLWatcher {
+const { fs } = require('flk-fs');
+
+const serviceWorker = require('./../build/builders/service-worker-handler');
+
+class JavascriptWatcher {
     /**
      * Constructor
      */
     constructor(eyeOrb) {
         this.eyeOrb = eyeOrb;
+        this.serviceWorkerExists = false;
+        if (serviceWorker.check(APP_NAME)) {
+            this.serviceWorkerExists = true;
+            serviceWorker.copy();
+        }
         this.startWatching();
+    }
+
+    isServiceWorkerFile(filePath) {
+        return this.possibleServiceWorkerPaths.includes(filePath);
+    }
+
+    updateServiceWorkerFile(filePath) {
+        fs.copy(filePath, STATIC_DIR + '/js/service-worker.js');
     }
 
     /**
@@ -21,6 +38,12 @@ class HTMLWatcher {
             rebuildApp();
         }).on('change', filePath => {
             filePath = filePath.replace(/\\/g, '/');
+
+            if (serviceWorker.is(filePath)) {
+                serviceWorker.copy();
+                reloadApp();
+                return;
+            }
 
             if (updatingJs) return;
             updatingJs = true;
@@ -49,4 +72,4 @@ class HTMLWatcher {
     }
 }
 
-module.exports = HTMLWatcher;
+module.exports = JavascriptWatcher;

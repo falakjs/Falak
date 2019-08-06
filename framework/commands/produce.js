@@ -5,18 +5,24 @@ let htaccessFileContent = fs.get(FRAMEWORK_OUTPUTS_PATH + '/.htaccess');
 let htaccessRulesPlaceholder = `
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteRule ^appRule appName-locale.html [L] 
-`;
+    RewriteRule ^appRule appName-locale.html [L]`;
 
-const httpsOnly = `    # Force https
+const httpsOnly = `    
+    # Force https
     RewriteCond %{HTTPS} off
-    RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
-`;
+    RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]`;
 
-const prerenderText = (prerenderHandlerUrl, domainUrl, delay, bots) => `     # Prerender
+const prerenderText = (prerenderHandlerUrl, domainUrl, delay, bots) => `     
+    # Prerender
     RewriteCond %{HTTP_USER_AGENT} .*(${bots}).* [NC]
-    RewriteRule (.*) ${prerenderHandlerUrl}?domain=${domainUrl}&path=/$1&delay=${delay} [L,QSA]
-`;
+    RewriteRule (.*) ${prerenderHandlerUrl}?domain=${domainUrl}&path=/$1&delay=${delay} [L,QSA]`;
+
+const sitemapText = (sitemapOptions) => {
+    return `    
+    # sitemap route
+    RewriteRule ^${sitemapOptions.route}$ ${sitemapOptions.location} [L,NC]`;
+};
+
 // with 301 Redirect
 // '    RewriteRule (.*) ${prerenderHandlerUrl}?domain=${domainUrl}&path=/$1&delay=${delay} [L,R=301]'
 
@@ -24,9 +30,14 @@ const DEFAULT_PRERENDER_OPTIONS = {
     mode: 'facade', // facade|external|internal
     internalPath: 'prerender.php',
     delay: 2500,
-    externalUrl: 'https://prerender.hasanzohdy.com',
-    bots: 'Googlebot|facebook|crawl|WhatsApp',
+    externalUrl: 'https://prerender.mentoor.io',
+    bots: 'Google-Site-Verification|Googlebot|facebook|crawl|WhatsApp',
     staticDir: 'static-files',
+};
+
+const SITEMAP_DEFAULTS = {
+    route: null,
+    location: null,
 };
 
 function createHtaccessFile(command, apps) {
@@ -41,7 +52,7 @@ function createHtaccessFile(command, apps) {
             appPath = app.path.ltrim('/');
 
         let isBaseApp = i == apps.length - 1;
-        if (! isBaseApp) {
+        if (!isBaseApp) {
             APPS_LIST.push(appName);
         }
 
@@ -60,7 +71,7 @@ function createHtaccessFile(command, apps) {
                     .replace('appName', appName)
                     .replace('locale', localeCode);
 
-                if (isBaseApp || ! isBaseApp && localeCode == app.locale) {
+                if (isBaseApp || !isBaseApp && localeCode == app.locale) {
                     htacessRulesList.push(htaccessAppsRules);
                 } else {
                     htacessRulesList.unshift(htaccessAppsRules);
@@ -69,7 +80,7 @@ function createHtaccessFile(command, apps) {
         }
     }
 
-    if (! Is.empty(APPS_LIST)) {
+    if (!Is.empty(APPS_LIST)) {
         appsList = `(${APPS_LIST.join('|')})|`;
     }
 
@@ -96,8 +107,15 @@ function createHtaccessFile(command, apps) {
 
     if (prerender) {
         outputHtaccessFileContent = outputHtaccessFileContent.replace('#Prerender', prerenderText(prerender.handlerUrl, config.production.baseUrl, prerender.delay, prerender.bots));
+
     } else {
         outputHtaccessFileContent = outputHtaccessFileContent.replace('#Prerender', '');
+    }
+
+    let sitemap = Is.object(config.production.sitemap) ? config.production.sitemap : SITEMAP_DEFAULTS;
+
+    if (sitemap.location && sitemap.route) {
+        outputHtaccessFileContent = outputHtaccessFileContent.replace('#sitemap', sitemapText(sitemap));
     }
 
     fs.put(ROOT + '/dist/.htaccess', outputHtaccessFileContent);
@@ -122,8 +140,8 @@ async function startProducing(command) {
     // create again
     fs.makeDirectory(ROOT + '/dist');
 
-    let apps = ! Is.empty(command.args.apps) ? command.args.apps : Object.keys(config.apps);
-        
+    let apps = !Is.empty(command.args.apps) ? command.args.apps : Object.keys(config.apps);
+
     for (let appName of apps) {
         require(FRAMEWORK_ROOT_PATH + '/bootstrap/app-config')(appName);
 
@@ -143,8 +161,15 @@ async function startProducing(command) {
         });
 
         const buildApp = require('./../app-compiler');
+        // const serviceWorker = require('./../build/builders/service-worker-handler');
 
+        // // check if there's a service worker
+        // if (serviceWorker.check(appName)) {
+        //     serviceWorker.copy();
+        // }
+        // die();
         await buildApp();
+        
         await sassCompiler.clear('ltr').compile('ltr');
         await sassCompiler.clear('rtl').compile('rtl');
 

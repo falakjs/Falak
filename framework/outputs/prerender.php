@@ -1,6 +1,21 @@
 <?php
 
-$path = $_GET['path'];
+function get_content($URL){
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+
+    curl_setopt($ch, CURLOPT_URL, $URL);
+    $data = curl_exec($ch);
+    
+  //   echo curl_error($ch);
+    
+    curl_close($ch);
+    return $data;
+}
+
+
+$path = ltrim($_GET['path'], '/');
 
 $domain = $_GET['domain'];
 
@@ -12,11 +27,15 @@ if (!is_dir($cache_path)) {
     mkdir($cache_path, 0777, true);
 }
 
+// htaccess fix for default page
+
+if (! $path || $path == '403.shtml') {
+    $path = 'index';
+}
+
 $file_path = $cache_path . str_replace('/', '-', trim($path, '/')) . '.html';
 
 if (file_exists($file_path)) {
-    die(file_get_contents($file_path));
-
     echo file_get_contents($file_path);
 
     // recache the content again
@@ -37,7 +56,7 @@ function load_content()
 {
     global $domain, $path, $delay, $file_path;
 
-    $content = file_get_contents("https://prerender.hasanzohdy.com?domain=$domain&path=/$path&delay=$delay");
+    $content = get_content("https://prerender.mentoor.io?domain=$domain&path=/$path&delay=$delay");
 
     echo $content;
     send_response();
@@ -57,8 +76,6 @@ function send_response()
          */
         session_write_close();
         fastcgi_finish_request();
-
-        return;
     }
 
     ignore_user_abort(true);

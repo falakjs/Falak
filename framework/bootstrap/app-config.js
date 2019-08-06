@@ -33,6 +33,10 @@ class AppConfig {
             this.baseUrl = `http://localhost:${process.env.PORT}`;
         }
 
+        if (! config.apps[this.appName]) {
+            die(`Undefined app ${cli.redBright(this.appName)}`);
+        }
+
         this.currentApp = config.apps[this.appName];
     }
 

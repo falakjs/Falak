@@ -1,5 +1,5 @@
 const path = require('path');
-const fs = require('flk-fs');
+const { fs } = require('flk-fs');
 const util = require('util');
 
 global.echo = (...args) => {

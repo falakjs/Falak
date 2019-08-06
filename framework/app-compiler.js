@@ -33,6 +33,7 @@ function buildApp() {
             echo.sameLine(cli.cyan(`Compiling html files`));
 
             htmlCompiler.compileAll().then(async () => {
+
                 if (ENV == 'development') {
                     watcher.watchType('html');
                 }

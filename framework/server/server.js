@@ -26,10 +26,13 @@ function setCurrentLocale(appConfig, request) {
         global.CURRENT_LOCALE = appConfig.locale;
     }
 
+    // echo(request.path)
+
     for (let locale of appConfig.locales) {
-        if (request.path.startsWith(appConfig.path.ltrim('/') + '/' + locale)) {
+        if (request.path.trim('/').startsWith(appConfig.path.ltrim('/') + '/' + locale)) {
             global.CURRENT_LOCALE = locale;
             global.CURRENT_DIRECTION = getDirectionOf(locale);
+
             break;
         }
     }
@@ -68,6 +71,7 @@ function sendResponse() {
 
     return htmlBuilder.appName(appConfig.name)
                       .appDirection(CURRENT_DIRECTION)
+                      .facebookAppId(appConfig.meta.facebookAppId)
                       .localeCode(CURRENT_LOCALE)
                       .baseUrl(BASE_URL)
                       .title(title)
@@ -78,6 +82,7 @@ function sendResponse() {
 
 function getScriptTags() {
     let cdnFiles = resources.externals.js || [];
+        
     return cdnFiles.concat(resources.jsVendor).concat(resources.jsFiles).map(filePath => {
         return `<script src="${filePath}"></script>`;
     }).join('');

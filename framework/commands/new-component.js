@@ -34,18 +34,18 @@ function createComponent(componentName, command) {
     updatePackage(appName, componentName, moduleName);
 
     if (command.options.route) {
-        addPageRoute(command.options.route, component, appName);
+        addPageRoute(command.options.route, component, componentName, appName);
     }
 
     echo(`${cli.cyan(componentName)} ${cli.green('component has been created successfully.')}`);
 }
 
-function addPageRoute(route, component, appName) {
+function addPageRoute(route, component, componentName, appName) {
     let routingJsPath = ROOT + `/src/${appName}/modules/routing.js`;
 
     let routingJsContent = fs.get(routingJsPath);
 
-    routingJsContent += `\r\n// ${component} page\r\n Router.add('${route}', ${component});`;
+    routingJsContent += `\r\n// ${componentName.replace('-page', '').replace(/-/g, ' ').capitalize()} page\r\n Router.add('${route}', ${component});`;
 
     fs.put(routingJsPath, routingJsContent);
 }

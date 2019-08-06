@@ -42,9 +42,11 @@ function updatePackage(moduleName, appName) {
 
     let $package = fs.getJson(packagePath);
 
-    if (moduleName && $package.modules.includes(moduleName)) {
-        $package.modules.push(moduleName);
-    } else if (!$package.modules.includes('services')) {
+    if (moduleName) {
+        if (! $package.modules.includes(moduleName)) {
+            $package.modules.push(moduleName);
+        }
+    } else if (! $package.modules.includes('services')) {
         $package.modules.push('services');
     }
 

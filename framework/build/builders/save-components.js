@@ -15,11 +15,6 @@ function saveComponents() {
 
         $jsComponentsContent += `const BASE_URL = "${BASE_URL}"; const APP_NAME = '${APP_NAME}'; const _C = [${$config}];`;
 
-        // now we need to check if there is any externals files to be loaded
-        // js or css files
-        let $externals = resources.externals;
-
-        $jsComponentsContent += `var __EXTERNALS__ = ${JSON.stringify($externals)};`;
         $jsComponentsContent += `var LANGUAGES = ${JSON.stringify(config.locales)};`;
 
         let $initPath = STATIC_DIR + '/js/__init__.js';

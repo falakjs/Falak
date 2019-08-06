@@ -48,7 +48,7 @@ class Parser {
     parse() {
         return new Promise(resolve => {
             if (this.debugger) {
-                echo(cli.blueBright(`Recompiling ${this.viewName}`));
+                echo(cli.blueBright(`Recompiling ${this.viewName.ltrim('/')}`));
             }
 
             this.htmlCompiler.parse();
@@ -57,7 +57,9 @@ class Parser {
 
             let fileContent = `${this.parsed}`.trim();
 
-            let parsedFilePath = `${ROOT}/public/${APP_NAME}/smart-views/${this.viewName.replace(/\//g, '-')}.js`;
+            let viewName = this.viewName.replace(APP_NAME + '/modules/', '').replace('/components', '');
+
+            let parsedFilePath = `${ROOT}/public/${APP_NAME}/smart-views/${viewName.replace(/\//g, '_')}.js`;
 
             fs.put(parsedFilePath, fileContent);
             if (this.debugger) {

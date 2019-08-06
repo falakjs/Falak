@@ -483,7 +483,6 @@ class Tag {
     build() {
         this.openTag();
 
-
         const renderChildren = () => {
             this.htmlCompiler.extractChildren(this.getElement(), this.namespace)
         };
@@ -513,6 +512,19 @@ class Tag {
     }
 
     /**
+     * Open tag
+     */
+    openTag() {
+        this.renderElementProperties();
+
+        this.addTag();
+
+        for (let callback of this.onBuildEvents) {
+            callback(this);
+        }
+    }
+
+    /**
      * Close tag
      */
     closeTag() {
@@ -525,20 +537,7 @@ class Tag {
         }
 
         if (this.removeTagVariable) {
-            this.htmlCompiler.parsed = this.htmlCompiler.parsed.replace(`let ${this.variableName} = `, '');
-        }
-    }
-
-    /**
-     * Open tag
-     */
-    openTag() {
-        this.renderElementProperties();
-
-        this.addTag();
-
-        for (let callback of this.onBuildEvents) {
-            callback(this);
+            this.htmlCompiler.parsed = this.htmlCompiler.parsed.replace(`${this.currentVariableDeclaration} = `, '');
         }
     }
 
@@ -600,7 +599,14 @@ class Tag {
 
         argumentsList = argumentsList.join(',');
 
-        this.appendLine(`let ${variableName} = ${this.tagType()}(${argumentsList})`);
+        this.currentVariableDeclaration  = `let ${variableName}`;
+
+        if (this.attrs().has('*as')) {
+            this.currentVariableDeclaration = `${this.htmlCompiler.objectName}.${this.attrs().forcePull('*as')}`;
+            this.declareVariable();
+        }
+
+        this.appendLine(`${this.currentVariableDeclaration} = ${this.tagType()}(${argumentsList})`);
     }
 
     /**

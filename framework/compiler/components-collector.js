@@ -1,4 +1,4 @@
-const {glob} = require('./../bootstrap/modules');
+const { glob } = require('./../bootstrap/modules');
 class ComponentsCollector {
     constructor(componentsPatterns) {
         this.componentsPatterns = componentsPatterns;
@@ -9,9 +9,10 @@ class ComponentsCollector {
      * Collect all components
      */
     collect() {
-        return new Promise(resolve => {
-            glob(this.componentsPatterns, (err, files) => {
-                if (! files) die(err)
+        return new Promise(async resolve => {
+
+            try {
+                let files = await glob(this.componentsPatterns);
                 for (let i = 0; i < files.length; i++) {
                     let file = files[i];
 
@@ -22,8 +23,11 @@ class ComponentsCollector {
                     if (i == files.length - 1) {
                         resolve();
                     }
+
                 }
-            });
+            } catch (error) {
+                die(12);
+            }
         });
     }
 }

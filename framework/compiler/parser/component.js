@@ -63,13 +63,18 @@ module.exports = class Component extends Tag {
         if (componentContent.length > 0) {
             if (this.contentToString) {
                 // contentToString = componentContent; as innerHTML converts special characters, we'll use textContent instead
-                contentToString = this.getElement().textContent;
+                // contentToString = this.getElement().textContent;
+                contentToString = '';
+
+                for (let child of this.getElement().childNodes) {
+                    contentToString += child.outerHTML || child.nodeValue;
+                }
             }
 
-            if (this.parseContent !== false) {
+            else if (this.parseContent !== false) {
                 let contentCompiler = new HtmlCompiler(componentContent);
 
-                contentCompiler.originalCompiler = this.htmlCompiler;
+                contentCompiler.originalCompiler = this.htmlCompiler.originalCompiler;
 
                 if (this.htmlCompiler.currentState) {
                     contentCompiler.currentState = this.htmlCompiler.currentState;
@@ -162,7 +167,7 @@ module.exports = class Component extends Tag {
 
         if (this.htmlCompiler.insideForLoop) {
             componentInfo.insideLoop = true;
-            // the unique id of the for loop is used because there might be a nested loops
+            // the unique id of the for loop is used because there might be nested loops
             // so we want to make sure that any component inside all of these loops have
             // a unique index
             let uniqueIdOfForLoop = '"" +' + this.htmlCompiler.currentLoop.idTree.join('+');
