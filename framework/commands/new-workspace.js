@@ -9,7 +9,7 @@ class WorkSpace {
     }
 
     async createNewWorkSpace() {
-        echo(cli.yellow(`Creating ${this.command.appName} workspace...`));
+        echo(cli.yellow(`Creating ${cli.green(this.command.appName)} workspace...`));
 
         this.workspaceDirectory = `${ROOT}/${this.command.appName}`;
 

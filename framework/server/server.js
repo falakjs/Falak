@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const { sassCompiler } = require('./../bootstrap');
 const htmlBuilder = require('../helpers/html-builder');
+const browserify = require('browserify');
 
 function setApp(request) {
     for (let appName in config.apps) {
@@ -44,7 +45,10 @@ function setCurrentLocale(appConfig, request) {
 }
 
 app.get('*', async (request, response) => {
-    if ((request.path.startsWith('/public') && !request.path.startsWith(`/public/${APP_NAME}/css`))
+    if (request.path.endsWith('bundle.js')) {
+        while (bundling) { }
+        return response.sendFile(BUNDLED_PATH);
+    } else if ((request.path.startsWith('/public') && !request.path.startsWith(`/public/${APP_NAME}/css`))
         || request.path.startsWith('/src') || request.path.startsWith('/node_modules')) {
         return response.sendFile(ROOT + request.path);
     }
@@ -70,19 +74,23 @@ function sendResponse() {
     let title = appConfig.meta.title[localeCode];
 
     return htmlBuilder.appName(appConfig.name)
-                      .appDirection(CURRENT_DIRECTION)
-                      .facebookAppId(appConfig.meta.facebookAppId)
-                      .localeCode(CURRENT_LOCALE)
-                      .baseUrl(BASE_URL)
-                      .title(title)
-                      .stylesheets(getStylesheets(CURRENT_DIRECTION, appConfig.name))
-                      .scripts(getScriptTags())
-                      .compile();
+        .appDirection(CURRENT_DIRECTION)
+        .facebookAppId(appConfig.meta.facebookAppId)
+        .localeCode(CURRENT_LOCALE)
+        .baseUrl(BASE_URL)
+        .title(title)
+        .stylesheets(getStylesheets(CURRENT_DIRECTION, appConfig.name))
+        .scripts(getScriptTags())
+        .compile();
 }
 
 function getScriptTags() {
     let cdnFiles = resources.externals.js || [];
-        
+
+    // return cdnFiles.concat(['bundle.js']).concat(resources.jsFiles).map(filePath => {
+    //     return `<script src="${filePath}"></script>`;
+    // }).join('');
+
     return cdnFiles.concat(resources.jsVendor).concat(resources.jsFiles).map(filePath => {
         return `<script src="${filePath}"></script>`;
     }).join('');
@@ -122,7 +130,104 @@ function sassError(error) {
     // die();
 }
 
+const bundledJs = '';
+
+let bundling = true;
+
+const BUNDLED_PATH = ROOT + '/public/bundle.js';
+
+function bundleJS() {
+    let filesList = resources.jsFiles.map(f => ROOT + '/' + f.ltrim('/'));
+
+    const { fs } = require('flk-fs');
+
+    // create a temp app.js file and inject all files inside it
+
+    let appContent = '';
+
+    const flkPackages = [];
+
+    // get the common and the current app package.json files content
+    for (let app of ['common', APP_NAME]) {
+        let packageJsonFile = SRC_DIR + '/' + app + '/package.json';
+        if (fs.exists(packageJsonFile)) {
+            let commonFile = fs.getJson(packageJsonFile);
+            commonFile.packages.map(npmPackage => {
+                // excludePackages is from npm-manager.js file
+                if (excludePackages.includes(npmPackage)) return;
+                if (npmPackage.includes('flk-')) {
+                    return;
+                    // return flkPackages.push(npmPackage);
+                }
+                
+                appContent += `require('${npmPackage}');\n`;
+            });
+        }
+    }
+
+    // filesList.map(f => {
+    //     appContent += `require('${f}');\n`;  
+    // })
+
+    // const appPath = ROOT + '/public/' + APP_NAME + '/js/app.js';
+    const appPath = ROOT + '/app.js';
+
+    fs.put(appPath, appContent);
+
+    // fs.putJson(ROOT + '/p.json', filesList.map(f => f.replace(ROOT, '')));
+
+    // return;
+
+    let bundler = browserify({
+        entries: appPath,
+        paths: [ROOT, ROOT + '/node_modules'],
+        debug: true,
+        insertGlobalVars: {
+            $: function(file) {
+                echo(file)  
+            }
+        }
+    });
+
+
+    filesList.map(f => {
+        bundler.add(f);
+    })
+
+    bundler.on('file', file => {
+        file = file.replace(/\\/g, '/')
+        // if (file.toLowerCase().includes('jquery') || file.includes('mdb.min')) echo(file.replace(ROOT, ''));
+        if (file.includes('flk-') || file.includes(SRC_DIR) || file.includes(ROOT + '/public')) return;
+        // echo(file.replace(ROOT, ''));
+    })
+
+    let opt = '';
+
+    const fileSystem = require('fs');
+
+    // let output = bundler.bundle((e, buf) => {
+    //     opt += buf.toString();
+    // });
+
+    var bundleFs = fileSystem.createWriteStream(BUNDLED_PATH);
+
+    bundler.pipeline.on('file', function () {
+        // echo(arguments[0])
+    })
+
+    bundler.bundle().on('error', function () {
+        echo(arguments[0]);
+    }).pipe(bundleFs);
+
+    bundleFs.on('finish', e => {
+        echo('Done');
+        bundling = false;
+    });
+}
+
 async function startServer(command) {
+    // bundleJS();
+
     echo.sameLine(cli.cyan('Compiling sass files...'));
     await sassCompiler.compile('ltr').then().catch(sassError);
     await sassCompiler.compile('rtl').then().catch(sassError);

@@ -21,7 +21,6 @@
         "position": "after"
     },
     "select": {
-        "defaultOption": "please-select",
-        "using": null
+        "defaultOption": "please-select"
     }
 }

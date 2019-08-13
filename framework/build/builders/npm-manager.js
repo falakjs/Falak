@@ -53,6 +53,10 @@ function collect() {
     return new Promise(async resolve => {
         let filesList = [];
 
+        global.excludePackages = [];
+
+        let devDependencies = [];
+
         for (let $package in packagesList) {
             let packagePath = NODE_MODULES_DIR + '/' + $package;
 
@@ -66,11 +70,23 @@ function collect() {
 
                 continue;
             }
-            
+
             let packageJsonFile = fs.getJson(packagePath + '/package.json');
             let mainFile = packageJsonFile.main;
 
-            if (!mainFile) continue;
+            if (packageJsonFile.devDependencies) {
+                for (let npmPackage in packageJsonFile.devDependencies) {
+                    let requiredPackage = npmPackage + '@' + packageJsonFile.devDependencies[npmPackage];
+                    if (!devDependencies.includes(requiredPackage) && !fs.isDir(NODE_MODULES_DIR + '/' + npmPackage)) {
+                        devDependencies.push(requiredPackage);
+                    }
+                }
+            }
+
+            if (!mainFile) {
+                excludePackages.push($package);
+                continue;
+            }
 
             // if the package is a framework package 
             // then skip it as we're getting all files from the dist directory instead of the main file
@@ -78,7 +94,10 @@ function collect() {
 
             let mainFilePath = packagePath + '/' + mainFile;
 
-            if (mainFilePath.endsWith('.css') || mainFilePath.endsWith('.scss')) continue;
+            if (mainFilePath.endsWith('.css') || mainFilePath.endsWith('.scss')) {
+                excludePackages.push($package);
+                continue;
+            }
 
             if (!mainFilePath.endsWith('.js')) {
                 mainFilePath += '.js';
@@ -87,7 +106,29 @@ function collect() {
             filesList.push(mainFilePath);
         }
 
+        if (!Is.empty(devDependencies)) {
+            // await installDevDependencies(devDependencies);
+        }
+
         return resolve(filesList.map(filePath => filePath.ltrim(ROOT)));
+    });
+}
+
+function installDevDependencies(devDependencies) {
+    return new Promise(async (resolve, reject) => {
+        resolve();
+        echo('Installing dev dependencies...');
+        echo(devDependencies)
+        try {
+            await execute(`npm install --save-dev ${devDependencies.join(' ')}`, {
+                cwd: ROOT,
+            });
+
+            // resolve();
+        } catch (e) {
+            // echo(cli.red(e));
+            // resolve();
+        }
     });
 }
 

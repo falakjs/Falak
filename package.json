@@ -22,8 +22,11 @@
   ],
   "license": "MIT",
   "dependencies": {
+    "portscanner": "^2.2.0",
     "flk-commander": "^1.0.0",
-    "flk-fs": "^1.0.1",
+    "flk-fs": "^1.0.3",
+    "flk-parser": "^0.1.1",
+    "flk-support": "^0.1.16",
     "single-line-log": "^1.1.2",
     "@babel/core": "^7.4.5",
     "@babel/preset-env": "^7.4.5",
@@ -40,8 +43,6 @@
     "open": "^6.3.0",
     "socket.io-client": "^2.2.0",
     "socket.io": "^2.2.0",
-    "flk-parser": "^0.1.1",
-    "flk-support": "^0.1.16",
     "axios": "^0.19.0",
     "cli-table": "^0.3.1"
   }
