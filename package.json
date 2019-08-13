@@ -1,6 +1,6 @@
 {
   "name": "falak",
-  "version": "0.1.86",
+  "version": "0.1.87",
   "preferGlobal": true,
   "bin": {
     "flk": "./framework/bin/flk"
@@ -9,10 +9,10 @@
   "author": {
     "name": "Hasan Zohdy",
     "email": "hassanzohdy@gmail.com"
-  },  
+  },
   "repository": {
-    "type" : "git",
-    "url" : "https://github.com/falakjs/falak.git"  
+    "type": "git",
+    "url": "https://github.com/falakjs/falak.git"
   },
   "homepage": "https://github.com/falakjs/falak",
   "keywords": [
