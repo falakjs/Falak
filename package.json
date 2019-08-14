@@ -1,6 +1,6 @@
 {
   "name": "falak",
-  "version": "0.1.87",
+  "version": "0.1.88",
   "preferGlobal": true,
   "bin": {
     "flk": "./framework/bin/flk"
