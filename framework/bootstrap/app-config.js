@@ -1,11 +1,11 @@
 const { fs } = require('./modules');
 
-if (! global.config) {
+if (!global.config) {
     if (!fs.exists(MAIN_CONFIG_PATH)) {
         die(cli.white(`Framework is not running in a workspace, please run it in a workspace.`));
     }
 
-    global.config = fs.getJson(MAIN_CONFIG_PATH);    
+    global.config = fs.getJson(MAIN_CONFIG_PATH);
 }
 
 class AppConfig {
@@ -15,13 +15,21 @@ class AppConfig {
         this.setGlobals();
     }
 
-    setApp(appName) {        
-        process.env.PORT = this.command && this.command.options.port ? this.command.options.port : config.port;
+    setApp(appName) {
+        this.port = config.port;
+
+        if (this.command && this.command.options.port) {
+            this.port = Number(this.command.options.port);
+        } else if (appName && config.apps[appName].port) {
+            this.port = Number(config.apps[appName].port);
+        }
+
+        process.env.PORT = this.port;
 
         this.appName = appName || config.baseApp;
 
         if (global.ENV) {
-            process.env.mode = global.ENV;    
+            process.env.mode = global.ENV;
         } else {
             process.env.mode = global.ENV = config.env;
         }
@@ -33,7 +41,7 @@ class AppConfig {
             this.baseUrl = `http://localhost:${process.env.PORT}`;
         }
 
-        if (! config.apps[this.appName]) {
+        if (!config.apps[this.appName]) {
             die(`Undefined app ${cli.redBright(this.appName)}`);
         }
 

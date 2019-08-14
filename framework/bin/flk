@@ -94,7 +94,32 @@ try {
             `${cli.cyanBright(`${process.env.CLI_NAME} serve -o`)} >> ${cli.yellow('Serve default application and open it in the browser.')}`,
             `${cli.cyanBright(`${process.env.CLI_NAME} serve -o -b=chrome`)} >> ${cli.yellow('Serve default application and open it in google chrome browser.')}`,
         )
-        .then(command => {
+        .then(async command => {
+            const portIsTaken = require('./../helpers/port-usage');
+            function validatePorts() {
+                return new Promise(async resolve => {
+                    process.env.PORT = configApp.port;
+                    global.ORIGINAL_PORT = process.env.PORT;
+
+                    while (await portIsTaken(process.env.PORT)) {
+                        process.env.PORT++;
+                    }
+
+                    if (global.ORIGINAL_PORT != process.env.PORT) {
+                        global.BASE_URL = global.BASE_URL.replace(global.ORIGINAL_PORT, process.env.PORT);
+                        global.SCRIPT_URL = global.SCRIPT_URL.replace(global.ORIGINAL_PORT, process.env.PORT);
+                    }
+
+                    while (await portIsTaken(process.env.SOCKET_PORT)) {
+                        process.env.SOCKET_PORT++;
+                    }
+
+                    resolve();
+                });
+            }
+
+            await validatePorts();
+
             require(FRAMEWORK_ROOT_PATH + '/server/index')(command);
         });
 
@@ -104,7 +129,7 @@ try {
         .option('--https', 'Allow only https requests by modifying htaccess file to force load https instead of http requests, default in config.json file')
         .option('--separated', 'When this flag is set, each application will be produced in a separate directory, otherwise all will be compiled to one directory.')
         .option('--without-htaccess', 'Do not create .htaccess file, use it when using nginx instead of apache.')
-        .then((command) => {
+        .then(async command => {
             require(FRAMEWORK_ROOT_PATH + '/commands/produce')(command);
         });
 
@@ -114,7 +139,7 @@ try {
         }
 
         if (!['--version', 'new', 'produce'].includes(command.name)) {
-            require(FRAMEWORK_ROOT_PATH + '/bootstrap/app-config')(command.app, command);
+            global.configApp = require(FRAMEWORK_ROOT_PATH + '/bootstrap/app-config')(command.app, command);
             require(FRAMEWORK_ROOT_PATH + '/bootstrap');
         }
     });

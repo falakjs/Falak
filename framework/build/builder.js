@@ -97,8 +97,8 @@ class AppBuilder {
                 let cliSocketHandlerPublicPath = STATIC_DIR + '/js/flk-socket-handler.js';
                 fs.put(cliSocketHandlerPublicPath, fs.get(FRAMEWORK_ROOT_PATH + '/cli-socket-handler.js').replace('PORT', process.env.SOCKET_PORT));
 
-                // resources.jsVendor.unshift('node_modules/socket.io-client/dist/socket.io.slim.js');
-                resources.jsFiles.unshift('node_modules/socket.io-client/dist/socket.io.slim.js');
+                resources.jsVendor.unshift('node_modules/socket.io-client/dist/socket.io.slim.js');
+                // resources.jsFiles.unshift('node_modules/socket.io-client/dist/socket.io.slim.js');
                 resources.jsFiles.unshift(cliSocketHandlerPublicPath.replace(ROOT + '/', ''));
             }
 

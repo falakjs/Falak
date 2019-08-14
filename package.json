@@ -22,7 +22,6 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "portscanner": "^2.2.0",
     "flk-commander": "^1.0.0",
     "flk-fs": "^1.0.3",
     "flk-parser": "^0.1.1",

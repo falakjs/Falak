@@ -13,10 +13,13 @@ class Server {
         this.serve();
     }
 
-    handleSockets() {
-        const io = require('socket.io')(this.command.options.socketPort || process.env.SOCKET_PORT);
-        globalize('io', io);
+    async handleSockets() {
+        let port = process.env.SOCKET_PORT;
+
+        const io = require('socket.io')(port);
         
+        globalize('io', io);
+
         io.on('connection', client => {
             clients.add(client);
             client.on('disconnect', () => {

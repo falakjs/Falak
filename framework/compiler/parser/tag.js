@@ -558,10 +558,14 @@ class Tag {
 
         if (!this.id) {
             if (this.htmlCompiler.insideForLoop) {
-                this.id = `'ff' + ${this.htmlCompiler.currentLoopIndex}`;
+                this.id = "'ff'";
             } else if (this.htmlCompiler.insideIfStatement) {
                 this.id = "'f'";
             }
+        }
+
+        if (this.htmlCompiler.insideForLoop) {
+            this.id += '+' + this.htmlCompiler.currentLoop.idTree.join('+');
         }
 
         if (this.id || !Is.empty(this.staticAttributes) || this.attributesText) {

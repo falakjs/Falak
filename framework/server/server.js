@@ -159,7 +159,7 @@ function bundleJS() {
                     return;
                     // return flkPackages.push(npmPackage);
                 }
-                
+
                 appContent += `require('${npmPackage}');\n`;
             });
         }
@@ -183,8 +183,8 @@ function bundleJS() {
         paths: [ROOT, ROOT + '/node_modules'],
         debug: true,
         insertGlobalVars: {
-            $: function(file) {
-                echo(file)  
+            $: function (file) {
+                echo(file)
             }
         }
     });
@@ -241,8 +241,13 @@ async function startServer(command) {
         scriptUrl = SCRIPT_URL;
 
     app.listen(port, (err) => {
+        if (ORIGINAL_PORT != port) {
+            echo.sameLine(cli.blueBright(`NOTICE: Port ${cli.redBright(ORIGINAL_PORT)} is in use, ${cli.green(port)} is used instead.`));
+            echo();
+        }
         echo.sameLine(cli.green(`Start browsing the application from ${cli.cyan(scriptUrl)}`));
         echo();
+
         if (command.open) {
             let openOptions = {};
 
