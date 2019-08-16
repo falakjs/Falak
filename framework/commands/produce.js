@@ -86,7 +86,7 @@ function createHtaccessFile(command, apps) {
 
     let outputHtaccessFileContent = htaccessFileContent.replace('main', mainApp).replace('APPS_LIST', appsList).replace('#apps-rules', htacessRulesList.join(""));
 
-    let httpsMode = typeof command.options.https != 'undefined' ? typeof command.options.https : config.production.https;
+    let httpsMode = typeof command.options.https != 'undefined' ? command.options.https : config.production.https;
     let prerender = config.production.prerender;
 
     if (prerender === true) {
@@ -100,7 +100,6 @@ function createHtaccessFile(command, apps) {
     } else if (prerender.mode == 'external') {
         prerender.handlerUrl = prerender.externalUrl;
     } else if (prerender.mode == 'internal') {
-
     }
 
     outputHtaccessFileContent = outputHtaccessFileContent.replace('#https', httpsMode ? httpsOnly : '');

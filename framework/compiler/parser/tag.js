@@ -77,7 +77,15 @@ class Tag {
             this.originalAttributes[attribute.name] = attribute.value;
         }
 
-        this.variableName = `el${random(3)}`;
+        if (this.attrs().has('*as')) {
+            this.elementAlias = this.attrs().forcePull('*as');
+            this.variableName = this.currentVariableDeclaration = `${this.htmlCompiler.objectName}.${this.elementAlias}`;
+            this.declareVariable();
+        } else {
+            this.variableName = `el${random(3)}`;
+
+            this.currentVariableDeclaration = `let ${this.variableName}`;
+        }
 
         // this.variableName = `${this.htmlCompiler.objectName}._e.${this.namespace}`;
 
@@ -488,9 +496,10 @@ class Tag {
         };
 
         if (this.isSkippable) {
-            let variableName = 'ce' + random(3);
+            let variableName = this.variableName;
+            let variableNameWithDeclaration = this.getVariableNameWithDeclaration();
             this.append(`
-                let ${variableName} = currentElement();
+                ${variableNameWithDeclaration} = currentElement();
 
                 if (! ${variableName}.__rendered) {
                     ${variableName}.__rendered = true;`);
@@ -509,6 +518,11 @@ class Tag {
 
         // attach element to the object
         // this.appendLine(`${this.htmlCompiler.objectName}.__el('${this.namespace}', ${variableName})`);
+    }
+
+
+    getVariableNameWithDeclaration() {
+        return this.currentVariableDeclaration;
     }
 
     /**
@@ -545,9 +559,6 @@ class Tag {
      * Add tag to dom list
      */
     addTag() {
-        // let variableName = `var ${this.variableName}`;
-        let variableName = `${this.variableName}`;
-
         let tagName = this.tagName();
 
         if (tagName.startsWith(HTML_SPECIAL_ELEMENTS_PREFIX)) {
@@ -602,13 +613,6 @@ class Tag {
         }
 
         argumentsList = argumentsList.join(',');
-
-        this.currentVariableDeclaration  = `let ${variableName}`;
-
-        if (this.attrs().has('*as')) {
-            this.currentVariableDeclaration = `${this.htmlCompiler.objectName}.${this.attrs().forcePull('*as')}`;
-            this.declareVariable();
-        }
 
         this.appendLine(`${this.currentVariableDeclaration} = ${this.tagType()}(${argumentsList})`);
     }

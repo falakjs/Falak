@@ -98,8 +98,8 @@ module.exports = class Component extends Tag {
         let componentAlias,
             componentIsArray = false;
 
-        if (this.attrs().has('*as')) {
-            componentAlias = this.attrs().forcePull('*as');
+        if (this.elementAlias) {
+            componentAlias = this.elementAlias;
         }
 
         let props = {};
