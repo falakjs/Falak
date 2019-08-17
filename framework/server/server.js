@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const { sassCompiler } = require('./../bootstrap');
 const htmlBuilder = require('../helpers/html-builder');
-const browserify = require('browserify');
+// const browserify = require('browserify');
 
 function setApp(request) {
     for (let appName in config.apps) {
