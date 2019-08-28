@@ -111,7 +111,7 @@ class HtmlCore {
                 }
 
                 if (htmlFile) {
-                    echo.sameLine(cli.yellow('Compiling ' + cli.green(htmlFile.replace(ROOT, ''))));
+                    echo.sameLine(cli.yellow('Compiling ' + cli.green(htmlFile.replace(ROOT + '/', ''))));
                 }
 
                 this.compileView(htmlFile, selector, component, isUnique, false).then(parsedFilePath => {

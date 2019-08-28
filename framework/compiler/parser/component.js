@@ -191,15 +191,20 @@ module.exports = class Component extends Tag {
 
         let componentCode = `this._lc('${componentName}'${secondArgument})`;
 
+        let componentVariable = componentAlias ? `${parentComponent}.${componentAlias}` : 'cmp' + random(4);
+
         if (componentAlias) {
             if (componentIsArray) {
                 this.appendLine(`${parentComponent}.${componentAlias}.push(${componentCode}.component)`);
             } else {
-                this.appendLine(`${parentComponent}.${componentAlias} = ${componentCode}`);
+                this.appendLine(`${componentVariable} = ${componentCode}`);
             }
         } else {
-            this.appendLine(componentCode);
+            this.appendLine(`let ${componentVariable} = ${componentCode}`);
         }
+
+        
+        // this.appendLine(``);
 
         // this.closeTag();
     }

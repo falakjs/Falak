@@ -143,6 +143,15 @@ class Tag {
     }
 
     /**
+     * Check if the variable name is declared
+     * 
+     * @returns bool
+     */
+    variableIsDeclared() {
+        return this.removeTagVariable === false;
+    }
+
+    /**
      * Initialize the info
      * 
      * @returns HTMLElement
@@ -470,6 +479,16 @@ class Tag {
      * Get tag type as open-close or self-closed tag
      */
     tagType() {
+        // new
+        // check if the element has no inner content
+        // make sure that tha tag variable is not needed, as we cam them shorthand the empty tags or the tag with texts only
+        if (! this.variableIsDeclared() && ! Tag.selfClosedTags.includes(this.tagName())) {
+            if (this.originalElement.innerHTML.length == 0) return Tag.ELEMENT_EMPTY_CONTENT;
+            if (this.originalElement.childNodes.length == 1 && this.originalElement.childNodes[0].constructor.name == 'Text') {
+                return Tag.ELEMENT_TEXT_CONTENT;
+            }    
+        }
+
         return Tag.selfClosedTags.includes(this.tagName()) ? Tag.ELEMENT_VOID : Tag.ELEMENT_OPEN;
     }
 
@@ -567,6 +586,15 @@ class Tag {
 
         let argumentsList = [`'${tagName}'`];
 
+        let tagType = this.tagType();
+
+        if (tagType == Tag.ELEMENT_TEXT_CONTENT) {
+            let tagText = this.originalElement.childNodes[0].nodeValue;
+            this.originalElement.removeChild(this.originalElement.childNodes[0]);
+
+            argumentsList.push('`' + tagText + '`');
+        }
+
         if (!this.id) {
             if (this.htmlCompiler.insideForLoop) {
                 this.id = "'ff'";
@@ -614,7 +642,7 @@ class Tag {
 
         argumentsList = argumentsList.join(',');
 
-        this.appendLine(`${this.currentVariableDeclaration} = ${this.tagType()}(${argumentsList})`);
+        this.appendLine(`${this.currentVariableDeclaration} = ${tagType}(${argumentsList})`);
     }
 
     /**
@@ -817,6 +845,8 @@ Tag.selfClosedTags = ['input', 'img', 'br', 'hr', 'link', 'meta'];
 
 Tag.ELEMENT_OPEN = 'eo';
 Tag.ELEMENT_CLOSE = 'ec';
+Tag.ELEMENT_EMPTY_CONTENT = 'eec'; // element empty content
+Tag.ELEMENT_TEXT_CONTENT = 'ewt'; // element with text
 Tag.ELEMENT_VOID = 'ev';
 
 module.exports = Tag;

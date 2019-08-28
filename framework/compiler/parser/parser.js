@@ -24,7 +24,7 @@ class Parser {
 
         this.html = html;
 
-        this.htmlCompiler = new HtmlCompiler(this.html, this.viewName);
+        this.htmlCompiler = new HtmlCompiler(this.html, this.viewName, this);
 
         this.htmlCompiler.parser = this;
     }

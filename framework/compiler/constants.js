@@ -4,6 +4,7 @@ const TAG_CLASS_PATH = COMPILER_DIR + '/parser/tag';
 const COMPONENT_CLASS_PATH = COMPILER_DIR + '/parser/component';
 const CHILD_COMPONENT_CLASS_PATH = COMPILER_DIR + '/parser/child-component';
 const HTML_COMPILER_PATH = FRAMEWORK_ROOT_PATH + '/parser/html-compiler';
+const BOOTSTRAP_PATH = FRAMEWORK_ROOT_PATH + '/bootstrap';
 
 module.exports = {
     COMPILER_DIR,
@@ -12,4 +13,5 @@ module.exports = {
     COMPONENT_CLASS_PATH,
     CHILD_COMPONENT_CLASS_PATH,
     HTML_COMPILER_PATH,
+    BOOTSTRAP_PATH,
 };

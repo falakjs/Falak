@@ -20,7 +20,7 @@ module.exports = class HtmlCompiler {
      * 
      * @param  string html
      */
-    constructor(html, viewName) {
+    constructor(html, viewName, parser = null) {
         this.objectName = 'comp' + random(3);
         this.objectName = 'component';
 
@@ -34,6 +34,8 @@ module.exports = class HtmlCompiler {
         this.viewName = viewName;
 
         this.observableProperties = [];
+
+        this.parser = parser;
 
         this.originalCompiler = this;
 
@@ -66,6 +68,15 @@ module.exports = class HtmlCompiler {
         this.currentState = null;
 
         this.componentsCallback = [];
+    }
+
+    /**
+     * Get the original html file path
+     * 
+     * @return string 
+     */
+    getFilePath() {
+        return this.originalCompiler.parser.filePath;
     }
 
     /**

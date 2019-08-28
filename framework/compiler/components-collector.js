@@ -26,7 +26,7 @@ class ComponentsCollector {
 
                 }
             } catch (error) {
-                die(12);
+                die(error);
             }
         });
     }
