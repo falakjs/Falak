@@ -137,10 +137,7 @@ class HtmlCore {
      */
     compileView(htmlFile, selector, component, isUnique, debug) {
         return new Promise(resolve => {
-
-            if (this.filesQueue[htmlFile]) {
-                return;
-            }
+            if (this.filesQueue[htmlFile]) return;
 
             this.filesQueue[htmlFile] = true;
 

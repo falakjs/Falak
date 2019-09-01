@@ -1,6 +1,7 @@
 const { fs, glob } = require('./../bootstrap/modules');
 const { flatten } = require('./../compiler/helpers/flatten');
 const babel = require("@babel/core");
+const removeComments = require('./comment-remover');
 
 function getAlias(fileContent, className) {
     let lines = fileContent.split("\n");
@@ -42,11 +43,7 @@ module.exports = (hash, appDistPath) => {
 
         let DIContent = fs.get(FRAMEWORK_ROOT_PATH + '/production/di.js');
 
-        let filesList = [];
-
-        for (let file of resources.jsFiles) {
-            filesList.push(ROOT + '/' + file.ltrim('/'));
-        }
+        let filesList = resources.jsFiles.map(file => ROOT + '/' + file.ltrim('/'));
 
         let classesList = {};
 
@@ -54,14 +51,13 @@ module.exports = (hash, appDistPath) => {
 
         let productionContent = '';
 
-        for (let i = 0; i < filesList.length; i++) {
-            let file = filesList[i];
+        for (let file of filesList) {
+            if (file.includes('injection')) continue;
 
             let fileContent = fs.get(file).trim();
 
-            if (file.includes('injection')) {
-                continue;
-            }
+            // remove any comments from the file content
+            fileContent = removeComments(fileContent).trim();
 
             if (fileContent.startsWith('class ') || fileContent.includes('DI.register')) {
                 let className;

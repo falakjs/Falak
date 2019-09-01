@@ -228,10 +228,25 @@ function bundleJS() {
 async function startServer(command) {
     // bundleJS();
 
-    echo.sameLine(cli.cyan('Compiling sass files...'));
-    await sassCompiler.compile('ltr').then().catch(sassError);
-    await sassCompiler.compile('rtl').then().catch(sassError);
-    echo.sameLine(cli.green('Sass files have been compiled successfully.'));
+    // function getAppDirections() {
+    //     let directions = [];
+    //     for (let locale of appConfig.locales) {
+    //         if (! directions.includes(config.locales[locale].direction)) {
+    //             directions.push(config.locales[locale].direction);
+    //         }
+    //     }
+    //     return directions;
+    // }
+
+    // let directions = getAppDirections();
+
+    // echo.sameLine(cli.cyan('Compiling sass files...'));
+    
+    // for (let direction of directions) {
+    //     await sassCompiler.compile(direction).then().catch(sassError);
+    // }
+
+    // echo.sameLine(cli.green('Sass files have been compiled successfully.'));
 
     setTimeout(() => {
         io.emit('reconnected');

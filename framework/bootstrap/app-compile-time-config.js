@@ -11,7 +11,7 @@ function loadAppConfig() {
     }
 
     if (fs.exists(appConfigPath)) {
-        appConfig = Object.merge(appConfig, appConfigPath);
+        appConfig = Object.merge(appConfig, fs.getJson(appConfigPath));
     }
 
     globalize('htmlAppConfig', appConfig);

@@ -151,7 +151,12 @@ module.exports = class Component extends Tag {
         }
 
         if (Object.keys(this.attributes).length) {
-            componentInfo.attrs = this.attributes;
+            // make sure all attributes keys are camel case
+            let attributes = {};
+            for (let key in this.attributes) {
+                attributes[key.toCamelCase()] = this.attributes[key];
+            }
+            componentInfo.attrs = attributes;
         }
 
         if (Object.keys(this.style).length) {

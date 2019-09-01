@@ -41,8 +41,11 @@ global.FRAMEWORK_RESOURCES_PATH = FRAMEWORK_PACKAGE_PATH + '/resources';
 global.MAIN_CONFIG_PATH = ROOT + '/config.json';
 global.FRAMEWORK_ROOT_PATH = FRAMEWORK_PACKAGE_PATH + '/framework';
 global.FRAMEWORK_OUTPUTS_PATH = FRAMEWORK_ROOT_PATH + '/outputs';
+global.BOOTSTRAP_PATH = FRAMEWORK_ROOT_PATH + '/bootstrap';
 global.SRC_DIR = ROOT + '/src';
 global.FRAMEWORK_NAME = 'falak';
+
+global.BASE_NODE_MODULES_DIR = ROOT + '/node_modules';
 
 // check if the package is called globally
 if (fs.isDir(FRAMEWORK_PACKAGE_PATH + '/node_modules')) {
@@ -50,7 +53,7 @@ if (fs.isDir(FRAMEWORK_PACKAGE_PATH + '/node_modules')) {
     global.NODE_MODULES_DIR = FRAMEWORK_PACKAGE_PATH + '/node_modules';
 } else {
     process.env.isGlobal = true;
-    global.NODE_MODULES_DIR = ROOT + '/node_modules';
+    global.NODE_MODULES_DIR = BASE_NODE_MODULES_DIR;
 }
 
 global.log = require('single-line-log').stdout;

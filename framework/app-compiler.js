@@ -1,4 +1,4 @@
-const { appBuilder, htmlCompiler, watcher } = require('./bootstrap');
+const { appBuilder, htmlCompiler, watcher, sassCompiler } = require('./bootstrap');
 
 let ready = {};
 
@@ -8,6 +8,26 @@ function resetReady() {
         html: false,
         // npm: false,
     };
+}
+
+function compileSass() {
+    echo.sameLine(cli.cyan('Compiling sass files...'));
+
+    function getAppDirections() {
+        let directions = [];
+        for (let locale of appConfig.locales) {
+            if (!directions.includes(config.locales[locale].direction)) {
+                directions.push(config.locales[locale].direction);
+            }
+        }
+        return directions;
+    }
+
+    let directions = getAppDirections();
+
+    for (let direction of directions) {
+        sassCompiler.compile(direction);
+    }
 }
 
 function buildApp() {
@@ -33,6 +53,7 @@ function buildApp() {
             echo.sameLine(cli.cyan(`Compiling html files`));
 
             htmlCompiler.compileAll().then(async () => {
+                compileSass();
 
                 if (ENV == 'development') {
                     watcher.watchType('html');

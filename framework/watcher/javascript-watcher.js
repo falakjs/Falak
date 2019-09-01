@@ -34,7 +34,10 @@ class JavascriptWatcher {
 
         let updatingJs = false;
 
-        this.eyeOrb.watch(SRC_DIR + '/**/*.js').on('add', filePath => {
+        this.eyeOrb.watch([
+            SRC_DIR + '/**/*.js',
+            BASE_NODE_MODULES_DIR + '/**/*.js',
+        ]).on('add', filePath => {
             rebuildApp();
         }).on('change', filePath => {
             filePath = filePath.replace(/\\/g, '/');

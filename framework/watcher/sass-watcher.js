@@ -14,7 +14,10 @@ class SassWatcher {
      */
     startWatching() {
         const { sassCompiler } = require('./../bootstrap');
-        this.eyeOrb.watch(SRC_DIR + '/**/*.scss').on('all', async filePath => {
+        this.eyeOrb.watch([
+            SRC_DIR + '/**/*.scss',
+            BASE_NODE_MODULES_DIR + '/**/*.scss',
+        ]).on('all', async filePath => {
             echo.sameLine(cli.yellow('Recompiling sass...'));
             try {
                 let style = await sassCompiler.clear(CURRENT_DIRECTION).compileThenSave(CURRENT_DIRECTION);
