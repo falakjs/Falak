@@ -24,6 +24,8 @@ function flatten(object, options = {}) {
     return text;
 }
 
+global.flatten = flatten;
+
 function flattenObject(object, options) {
     let text = '{';
 

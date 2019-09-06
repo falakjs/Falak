@@ -479,17 +479,18 @@ class Tag {
      * Get tag type as open-close or self-closed tag
      */
     tagType() {
+        if (this._tagType) return this._tagType;
         // new
         // check if the element has no inner content
         // make sure that tha tag variable is not needed, as we cam them shorthand the empty tags or the tag with texts only
         if (! this.variableIsDeclared() && ! Tag.selfClosedTags.includes(this.tagName())) {
-            if (this.originalElement.innerHTML.length == 0) return Tag.ELEMENT_EMPTY_CONTENT;
+            if (this.originalElement.innerHTML.length == 0) return this._tagType = Tag.ELEMENT_EMPTY_CONTENT;
             if (this.originalElement.childNodes.length == 1 && this.originalElement.childNodes[0].constructor.name == 'Text') {
-                return Tag.ELEMENT_TEXT_CONTENT;
+                return this._tagType = Tag.ELEMENT_TEXT_CONTENT;
             }    
         }
 
-        return Tag.selfClosedTags.includes(this.tagName()) ? Tag.ELEMENT_VOID : Tag.ELEMENT_OPEN;
+        return this._tagType = Tag.selfClosedTags.includes(this.tagName()) ? Tag.ELEMENT_VOID : Tag.ELEMENT_OPEN;
     }
 
     /**

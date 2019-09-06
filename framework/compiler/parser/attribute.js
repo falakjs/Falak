@@ -90,6 +90,18 @@ module.exports = class Attribute {
     }
 
     /**
+     * Get the attribute value and wrap it as a dynamic value
+     * @param {*} attribute 
+     */
+    forcePullDynamic(attribute, defaultValue = null) {
+        let value = this.forcePull(attribute, defaultValue);
+
+        if (! value) return;
+
+        return '${' + value + '}';
+    }
+
+    /**
      * Determine if the given attribute name exists
      * 
      * @param  string attribute

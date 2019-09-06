@@ -2,7 +2,7 @@ const { fs } = require('./../bootstrap/modules');
 var execute = require('child-process-promise').exec;
 
 async function installPackages(command) {
-    let appName = command.options.app || APP_NAME;
+    let appName = command.options.app || 'common';
 
     let packages = command.packages;
 

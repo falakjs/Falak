@@ -87,7 +87,6 @@ function getStylesheets(direction, appName) {
 
 module.exports = (appName, command) => {
     return new Promise(async (resolve, reject) => {
-
         const appDistPath = ROOT + '/dist/public/' + appName;
 
         // remove the old dist
@@ -101,7 +100,7 @@ module.exports = (appName, command) => {
         if (serviceWorker.check(appName)) {
             serviceWorker.copy();
         }
-        
+
         // create css directory
         fs.makeDirectory(appDistPath + '/css');
         // copy css files
@@ -111,14 +110,16 @@ module.exports = (appName, command) => {
         fs.rename(appDistPath + '/css/app-rtl.css', appDistPath + `/css/app-rtl-${hashCode}.min.css`);
         // copy assets
         copyAssets(appDistPath);
-        // compile vendors
-        require('./compile-vendors')(hashCode, appDistPath);
-        // // compile application
-        await require('./compile-application')(hashCode, appDistPath, appName);
+        Promise.all([
+            // compile vendors
+            require('./compile-vendors')(hashCode, appDistPath),
+            // compile application
+            require('./compile-application')(hashCode, appDistPath, appName)
+        ]).then(resolve);
 
         echo(cli.yellow('Generating html files..'));
         // create html files
         createHtmlFiles(appName);
-        resolve();
+        // resolve();
     });
 };

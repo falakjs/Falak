@@ -1,7 +1,9 @@
 const { fs, glob } = require('./../bootstrap/modules');
 const { flatten } = require('./../compiler/helpers/flatten');
 const babel = require("@babel/core");
-const removeComments = require('./comment-remover');
+const removeComments = require('strip-comments');
+const Terser = require("terser");
+
 
 function getAlias(fileContent, className) {
     let lines = fileContent.split("\n");
@@ -105,9 +107,9 @@ module.exports = (hash, appDistPath) => {
 
         // replace using the keywords maps in all packages
 
-        let packagePaths = Object.values(resources.packages).map(path => path + '/**/compiler/**/production/**/keywords-map.js');
+        // let packagePaths = Object.values(resources.packages).map(path => path + '/**/compiler/**/production/**/keywords-map.js');
 
-        let files = await glob(packagePaths);
+        // let files = await glob(packagePaths);
 
         // for (let file of files) {
         //     let keywordsMap = require(file);
@@ -131,7 +133,18 @@ module.exports = (hash, appDistPath) => {
         //         }
         //     }
         // }
-        let result = babel.transformSync(productionContent, {
+        let contentPath = appDistPath + `/js/app.js`;
+        fs.put(contentPath, productionContent);
+        // fs.put(appDistPath + `/js/app-terser.js`, Terser.minify(productionContent, {
+        //     toplevel: true,
+        //     compress: {
+        //         passes: 2
+        //     },
+        //     output: {
+        //         beautify: false,
+        //     }
+        // }).code);
+        let result = babel.transformFileSync(contentPath, {
             envName: 'production',
             comments: false,
             // useBuiltIns: 'usage',
@@ -149,8 +162,8 @@ module.exports = (hash, appDistPath) => {
             ],
         });
 
+        fs.remove(contentPath);
         let productionCode = result.code;
-
 
         // return;
         fs.put(productionFilePath, productionCode);
