@@ -1,7 +1,7 @@
 # Falak JS
 > Falak Js Framework, A mass quick production framework for lazy people.
 
-![Falak JS](https://mentoor.io/falak/intro-black.jpg)
+![Falak JS](https://mentoor.io/public/falak/intro-black.jpg)
 
 # Why Falak
 Well, there are many outstanding frameworks such as `Angular`, `React` or `Vue` that can be used to develop a web application.
